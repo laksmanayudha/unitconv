@@ -1,3 +1,7 @@
+use clap::Parser;
+use unitconv::{run, Cli};
+
 fn main() {
-    println!("Hello, world!");
+    let cli= Cli::parse();
+    run(cli);
 }
