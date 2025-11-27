@@ -3,5 +3,7 @@ use unitconv::{run, Cli};
 
 fn main() {
     let cli= Cli::parse();
-    run(cli);
+    if let Err(e) = run(cli) {
+        eprint!("Error: {}", e);
+    }
 }
