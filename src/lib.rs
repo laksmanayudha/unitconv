@@ -1,5 +1,10 @@
 
+mod conv;
+
 use clap::{Parser, Subcommand};
+use conv::{validate_arguments};
+
+use crate::conv::convert_temperature;
 
 #[derive(Parser)]
 #[command(name = "unitconv", version = "1.0", about = "Aplikasi Konversi Unit")]
@@ -26,43 +31,17 @@ pub enum Commands {
   }
 }
 
-pub fn validate_arguments(from: Option<String>, to: Option<String>, value: Option<String>) -> Result<(String, String, f64), String> {
-  if let None = from {
-    return Err("Nilai `from` wajib diisi.".to_string());
-  }
-
-  if let None = to {
-    return Err("Nilai `to` wajib diisi.".to_string());
-  }
-
-  if let None = value {
-    return Err("Nilai `value` wajib diisi.".to_string());
-  }
-
-  let parsed_value = match value.unwrap().to_string().parse::<f64>() {
-      Ok(v) => v,
-      Err(_) => return Err("Pastikan value adalah number".to_string())
-  };
-
-  let from_unwrap = from.unwrap();
-  let to_unwrap = to.unwrap();
-
-  return Ok((from_unwrap, to_unwrap, parsed_value));
-}
-
 pub fn run(cli: Cli) -> Result<bool, String> {
 
   match cli.command {
     Some(Commands::Convert { from, to, value }) => {
-      let (from_unwrap, to_unwrap, parsed_value) = match validate_arguments(from, to, value) {
-          Ok(validated) => validated,
-          Err(e) => return Err(e.to_string())
-      };
+      let (from_unit, to_unit, parsed_value) = validate_arguments(from, to, value)?;
+      println!("from: {}, to: {}, value: {}", from_unit, to_unit, parsed_value);
 
-      print!("from: {}, to: {}, value: {}", from_unwrap, to_unwrap, parsed_value);
+      convert_temperature(from_unit, to_unit, parsed_value)?;
     }
     None => {
-      print!("Perintah tidak valid. Gunakan `--help` untuk melihat daftar perintah");
+      println!("Perintah tidak valid. Gunakan `--help` untuk melihat daftar perintah");
     }
   }
 
