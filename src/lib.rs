@@ -4,7 +4,7 @@ mod conv;
 use clap::{Parser, Subcommand};
 use conv::{validate_arguments};
 
-use crate::conv::{convert_temperature, list_unit};
+use crate::conv::{add_conversion, clear_hist, list_unit, show_hist};
 
 #[derive(Parser)]
 #[command(name = "unitconv", version = "1.0", about = "Aplikasi Konversi Unit")]
@@ -29,8 +29,16 @@ pub enum Commands {
     #[arg(long)]
     value: Option<String>
   },
+
   /// List unit konversi
-  List
+  List,
+
+  /// Menampilkan riwayat konversi
+  History {
+    /// Menhapus seluruh riwayat konversi
+    #[arg(long)]
+    clear: bool
+  }
 }
 
 pub fn run(cli: Cli) -> Result<bool, String> {
@@ -38,13 +46,20 @@ pub fn run(cli: Cli) -> Result<bool, String> {
   match cli.command {
     Some(Commands::Convert { from, to, value }) => {
       let (from_unit, to_unit, parsed_value) = validate_arguments(from, to, value)?;
-      convert_temperature(&from_unit, &to_unit, &parsed_value);
+      add_conversion(from_unit, to_unit, parsed_value)?;
     }
     Some(Commands::List) => {
       list_unit();
     }
+    Some(Commands::History { clear }) => {
+      show_hist()?;
+      if clear {
+        clear_hist()?;
+        println!("Riwayat konversi dibersihkan.");
+      }
+    }
     None => {
-      println!("Perintah tidak valid. Gunakan `--help` untuk melihat daftar perintah");
+      println!("Perintah tidak valid. Gunakan `--help` untuk melihat daftar perintah.");
     }
   }
 
