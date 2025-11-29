@@ -35,7 +35,7 @@ pub enum Commands {
 
   /// Menampilkan riwayat konversi
   History {
-    /// Menhapus seluruh riwayat konversi
+    /// Menghapus seluruh riwayat konversi
     #[arg(long)]
     clear: bool
   }
@@ -46,7 +46,7 @@ pub fn run(cli: Cli) -> Result<bool, String> {
   match cli.command {
     Some(Commands::Convert { from, to, value }) => {
       let (from_unit, to_unit, parsed_value) = validate_arguments(from, to, value)?;
-      add_conversion(from_unit, to_unit, parsed_value)?;
+      add_conversion(&from_unit, &to_unit, &parsed_value)?;
     }
     Some(Commands::List) => {
       list_unit();
