@@ -167,7 +167,7 @@ fn other_to_celsius(from_unit: &TUnit, value: &f64) -> f64 {
   let celsius = match from_unit {
     TUnit::Celsius    => value.clone(),
     TUnit::Fahrenheit => (value - 32.0) * 5.0 / 9.0,
-    TUnit::Kelvin     => value - 273.1
+    TUnit::Kelvin     => value - 273.15
   };
 
   celsius
