@@ -163,9 +163,13 @@ pub fn show_hist() -> Result<bool, String> {
   let histories = load_hist()?;
 
   println!("Riwayat Konversi:");
-  for (index, history) in histories.iter().enumerate() {
-    let number = index + 1;
-    println!("{}. {}", number, history);
+  if histories.is_empty() {
+    println!("Belum ada riwayat konversi.");
+  } else {
+    for (index, history) in histories.iter().enumerate() {
+      let number = index + 1;
+      println!("{}. {}", number, history);
+    }
   }
 
   Ok(true)
